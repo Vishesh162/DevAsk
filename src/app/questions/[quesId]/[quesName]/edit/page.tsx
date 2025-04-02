@@ -3,11 +3,15 @@ import { databases } from "@/models/server/config";
 import React from "react";
 import EditQues from "./EditQues";
 
-const Page = async (props: any) => {
-    const { params } = await props; // Ensure params is awaited properly
-    const question = await databases.getDocument(db, questionCollection, params.quesId);
-    return <EditQues question={question} />;
-};
+type Resolvable<T> = T | Promise<T>;
 
-export default Page;
+interface CustomPageProps {
+  params: Resolvable<{ quesId: string; quesName: string }>;
+}
 
+export default async function Page({ params }: CustomPageProps) {
+  // Always await to resolve to the plain object
+  const resolvedParams = await params;
+  const question = await databases.getDocument(db, questionCollection, resolvedParams.quesId);
+  return <EditQues question={question} />;
+}

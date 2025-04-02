@@ -3,13 +3,14 @@ import { databases } from "@/models/server/config";
 import React from "react";
 import EditQues from "./EditQues";
 
-export default async function Page({ params }: { params: any }) {
-  // Force params to be awaited and cast it to the expected shape
-  const { quesId, quesName } = await Promise.resolve(params) as { quesId: string; quesName: string };
-
+// Fix: Change the parameter type definition
+export default async function Page({ params }: { params: { quesId: string; quesName: string } }) {
+  // No need to await params as it's not a Promise
+  const { quesId, quesName } = params;
   const question = await databases.getDocument(db, questionCollection, quesId);
   return <EditQues question={question} />;
 }
+
 export async function generateStaticParams() {
     return []; // This ensures Next.js treats it as a dynamic route without preloading params
 }

@@ -8,14 +8,19 @@ import QuestionCard from "@/components/QuestionCard";
 import { UserPrefs } from "@/store/Auth";
 import Pagination from "@/components/Pagination";
 import Search from "./Search";
+import { useSearchParams } from 'next/navigation';
 
-const Page = async ({ searchParams }: { searchParams: URLSearchParams }) => {
+interface PageProps {
+  searchParams: Record<string, string | string[]>;
+}
+
+const Page = async ({ searchParams }: { searchParams: Record<string, string | string[]> }) => {
     // Convert searchParams to a standard object
     const params = new URLSearchParams(searchParams.toString());
 
-    const page = params.get("page") || "1";
-    const tag = params.get("tag");
-    const search = params.get("search");
+const page = searchParams.page?.toString() || "1";
+const tag = searchParams.tag?.toString();
+const search = searchParams.search?.toString();
 
     const queries = [
         Query.orderDesc("$createdAt"),

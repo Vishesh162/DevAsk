@@ -3,11 +3,9 @@ import { databases } from "@/models/server/config";
 import React from "react";
 import EditQues from "./EditQues";
 
-const Page = async (props: { params: { quesId: string; quesName: string } }) => {
-    // Ensure params is resolved before using it
-    const { quesId } = await Promise.resolve(props.params);
-
-    const question = await databases.getDocument(db, questionCollection, quesId);
+const Page = async ({ params }: { params: { quesId: string; quesName: string } }) => {
+    // No need to await params, just use it directly
+    const question = await databases.getDocument(db, questionCollection, params.quesId);
 
     return <EditQues question={question} />;
 };

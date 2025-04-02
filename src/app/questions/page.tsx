@@ -11,10 +11,13 @@ import Search from "./Search";
 import { useSearchParams } from 'next/navigation';
 
 interface PageProps {
-  searchParams: Record<string, string | string[]>;
+  params: Promise<{
+    quesId: string;
+    quesName: string;
+  }>;
 }
 
-const Page = async ({ searchParams }: { searchParams: Record<string, string | string[]> }) => {
+const Page = async ({ searchParams }: { searchParams: params<string, string | string[]> }) => {
     // Convert searchParams to a standard object
     const params = new URLSearchParams(searchParams.toString());
 

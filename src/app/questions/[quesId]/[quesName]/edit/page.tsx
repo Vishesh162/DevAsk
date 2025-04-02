@@ -10,3 +10,6 @@ export default async function Page({ params }: { params: any }) {
   const question = await databases.getDocument(db, questionCollection, quesId);
   return <EditQues question={question} />;
 }
+export async function generateStaticParams() {
+    return []; // This ensures Next.js treats it as a dynamic route without preloading params
+}

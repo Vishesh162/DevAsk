@@ -28,12 +28,12 @@ import { TracingBeam } from "@/components/ui/tracing-beam";
 
 // Define PageProps so that params can be a plain object or a Promise.
 interface PageProps {
-  params: { quesId: string; quesName: string } | Promise<{ quesId: string; quesName: string }>;
+  params: Promise<{ quesId: string; quesName: string }>;
 }
 
 const Page = async ({ params }: PageProps) => {
   // Ensure params is awaited regardless of its original type.
-  const { quesId, quesName } = await Promise.resolve(params);
+    const { quesId, quesName } = await params;
 
   const [question, answers, upvotes, downvotes, comments] = await Promise.all([
     databases.getDocument(db, questionCollection, quesId),

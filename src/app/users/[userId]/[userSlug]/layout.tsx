@@ -13,7 +13,7 @@ export default async function Layout({
     params
 }: {
     children: React.ReactNode;
-    params: { userId: string; userSlug: string };
+    params: Promise<{ userId: string; userSlug: string }>;
 }) {
     // Create a new variable
     const { userId } = await params;

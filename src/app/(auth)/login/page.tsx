@@ -18,7 +18,7 @@ const LabelInputContainer = ({
     return <div className={cn("flex w-full flex-col space-y-2", className)}>{children}</div>;
 };
 
-export default function Login() {
+function LoginContent() {
     const { login } = useAuthStore();
     const [isLoading, setIsLoading] = React.useState(false);
     const [error, setError] = React.useState("");
@@ -107,5 +107,13 @@ export default function Login() {
                 </button>
             </form>
         </div>
+    );
+}
+
+export default function Login() {
+    return (
+        <React.Suspense fallback={<div className="text-center text-white mt-10">Loading...</div>}>
+            <LoginContent />
+        </React.Suspense>
     );
 }

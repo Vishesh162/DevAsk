@@ -29,7 +29,12 @@ const Page = async ({
     questions.documents = await Promise.all(
         questions.documents.map(async (ques) => {
             const [author, answers, votes] = await Promise.all([
-                users.get<UserPrefs>(ques.authorId),
+                users.get<UserPrefs>(ques.authorId).catch(() => ({
+                    $id: ques.authorId,
+                    name: "Deleted User",
+                    email: "",
+                    prefs: { reputation: 0 } as UserPrefs,
+                })),
                 databases.listDocuments(db, answerCollection, [
                     Query.equal("questionId", ques.$id),
                     Query.limit(1),

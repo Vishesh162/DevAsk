@@ -67,56 +67,56 @@ export default function Register() {
     };
 
     return (
-
-        <div className="mx-auto  mt-16 w-full max-w-md rounded-none border border-solid border-white/30 bg-white p-4 shadow-input dark:bg-black md:rounded-2xl md:p-8">
-            <h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">
-                Welcome to Riverflow
+        <div className="mx-auto mt-16 w-full max-w-md rounded-2xl border border-white/10 bg-surface/60 backdrop-blur-xl p-6 shadow-2xl md:p-10">
+            <h2 className="text-3xl font-extrabold text-white tracking-tight text-center mb-2">
+                Join DevAsk
             </h2>
-            <p className="mt-2 max-w-sm text-sm text-neutral-600 dark:text-neutral-300">
-                Signup with riverflow if you you don&apos;t have an account.
-                <br /> If you already have an account,{" "}
-                <Link href="/login" className="text-orange-500 hover:underline">
-                    login
-                </Link>{" "}
-                to riverflow
+            <p className="mt-2 text-center text-sm text-zinc-400 mb-8">
+                Ready to collaborate? If you already have an account,{" "}
+                <Link href="/login" className="text-cyan-400 hover:text-cyan-300 transition-colors font-medium">
+                    log in here
+                </Link>
             </p>
 
             {error && (
-                <p className="mt-8 text-center text-sm text-red-500 dark:text-red-400">{error}</p>
+                <div className="mb-6 rounded-lg bg-red-500/10 border border-red-500/20 p-3 text-center text-sm text-red-500">
+                    {error}
+                </div>
             )}
-            <form className="my-8" onSubmit={handleSubmit}>
-                <div className="mb-4 flex flex-col space-y-2 md:flex-row md:space-x-2 md:space-y-0">
+            <form className="my-4" onSubmit={handleSubmit}>
+                <div className="mb-6 flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0">
                     <LabelInputContainer>
-                        <Label htmlFor="firstname">First name</Label>
-                        <Input className="text-white" id="firstname" name="firstname" placeholder="Tyler" type="text" />
+                        <Label htmlFor="firstname" className="text-zinc-300">First name</Label>
+                        <Input className="text-white bg-black/40 border-white/10 focus:border-violet-500/50 focus:ring-violet-500/50 transition-colors" id="firstname" name="firstname" placeholder="Tyler" type="text" />
                     </LabelInputContainer>
                     <LabelInputContainer>
-                        <Label htmlFor="lastname">Last name</Label>
-                        <Input className="text-white" id="lastname" name="lastname" placeholder="Durden" type="text" />
+                        <Label htmlFor="lastname" className="text-zinc-300">Last name</Label>
+                        <Input className="text-white bg-black/40 border-white/10 focus:border-violet-500/50 focus:ring-violet-500/50 transition-colors" id="lastname" name="lastname" placeholder="Durden" type="text" />
                     </LabelInputContainer>
                 </div>
-                <LabelInputContainer className="mb-4">
-                    <Label htmlFor="email">Email Address</Label>
+                <LabelInputContainer className="mb-6">
+                    <Label htmlFor="email" className="text-zinc-300">Email Address</Label>
                     <Input
-                        className="text-white"
+                        className="text-white bg-black/40 border-white/10 focus:border-violet-500/50 focus:ring-violet-500/50 transition-colors"
                         id="email"
                         name="email"
-                        placeholder="projectmayhem@fc.com"
+                        placeholder="developer@example.com"
                         type="email"
                     />
                 </LabelInputContainer>
-                <LabelInputContainer className="mb-4">
-                    <Label htmlFor="password">Password</Label>
-                    <Input className="text-white" id="password" name="password" placeholder="••••••••" type="password" />
+                <LabelInputContainer className="mb-8">
+                    <Label htmlFor="password" className="text-zinc-300">Password</Label>
+                    <Input className="text-white bg-black/40 border-white/10 focus:border-violet-500/50 focus:ring-violet-500/50 transition-colors" id="password" name="password" placeholder="••••••••" type="password" />
                 </LabelInputContainer>
 
                 <button
-                    className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
+                    className="group/btn relative block h-12 w-full rounded-xl bg-electric-gradient p-[1px] transition-transform active:scale-95"
                     type="submit"
                     disabled={isLoading}
                 >
-                    Sign up &rarr;
-                    <BottomGradient />
+                    <div className="flex h-full w-full items-center justify-center rounded-xl bg-surface transition-all duration-300 hover:bg-transparent">
+                        <span className="font-semibold text-white">Sign up &rarr;</span>
+                    </div>
                 </button>
 
                 <div className="my-8 h-[1px] w-full bg-gradient-to-r from-transparent via-neutral-300 to-transparent dark:via-neutral-700" />

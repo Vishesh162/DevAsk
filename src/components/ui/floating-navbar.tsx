@@ -59,7 +59,7 @@ export const FloatingNav = ({
                     duration: 0.2,
                 }}
                 className={cn(
-                    "fixed inset-x-0 top-10 z-50 mx-auto flex max-w-fit items-center justify-center space-x-4 rounded-full border border-transparent bg-white py-2 pl-8 pr-2 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] dark:border-white/[0.2] dark:bg-black",
+                    "fixed inset-x-0 top-6 z-50 mx-auto flex max-w-fit items-center justify-center space-x-4 rounded-full border border-white/10 bg-surface/60 backdrop-blur-md py-3 pl-8 pr-4 shadow-[0_4px_30px_rgba(0,0,0,0.5)] dark:bg-[#12121A]/80",
                     className
                 )}
             >
@@ -78,28 +78,28 @@ export const FloatingNav = ({
                 {session ? (
                     <button
                         onClick={logout}
-                        className="relative rounded-full border border-neutral-200 px-4 py-2 text-sm font-medium text-black dark:border-white/[0.2] dark:text-white"
+                        className="relative rounded-full border border-white/10 px-5 py-2 text-sm font-medium text-white hover:bg-white/5 transition-colors"
                     >
                         <span>Logout</span>
-                        <span className="absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
+                        <span className="absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent via-violet-500 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
                     </button>
                 ) : (
-                    <>
+                    <div className="flex items-center space-x-3 ml-4">
                         <Link
                             href="/login"
-                            className="relative rounded-full border border-neutral-200 px-4 py-2 text-sm font-medium text-black dark:border-white/[0.2] dark:text-white"
+                            className="text-sm font-medium text-zinc-300 hover:text-white transition-colors"
                         >
-                            <span>Login</span>
-                            <span className="absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
+                            Login
                         </Link>
                         <Link
                             href="/register"
-                            className="relative rounded-full border border-neutral-200 px-4 py-2 text-sm font-medium text-black dark:border-white/[0.2] dark:text-white"
+                            className="relative rounded-full bg-gradient-to-r from-violet-600 via-fuchsia-600 to-cyan-500 p-[1px] group"
                         >
-                            <span>Signup</span>
-                            <span className="absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
+                            <div className="rounded-full bg-[#12121A] px-5 py-2 transition-all duration-300 group-hover:bg-transparent">
+                                <span className="text-sm font-medium text-white">Signup</span>
+                            </div>
                         </Link>
-                    </>
+                    </div>
                 )}
             </motion.div>
         </AnimatePresence>

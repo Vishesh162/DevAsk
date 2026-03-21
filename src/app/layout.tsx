@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 export const metadata: Metadata = {
-  title: "RiverFlow",
+  title: "DevAsk",
   description: "Modern Approach to StackOverflow",
 };
 

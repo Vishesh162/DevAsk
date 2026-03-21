@@ -1,7 +1,7 @@
 "use client";
 
 import RTE from "@/components/RTE";
-import {Meteors} from "@/components/magicui/meteors";
+import { Meteors } from "@/components/magicui/meteors";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuthStore } from "@/store/Auth";
@@ -25,11 +25,11 @@ const LabelInputContainer = ({
     return (
         <div
             className={cn(
-                "relative flex w-full flex-col space-y-2 overflow-hidden rounded-xl border border-white/20 bg-slate-950 p-4",
+                "relative flex w-full flex-col space-y-3 overflow-hidden rounded-2xl border border-white/10 bg-surface/50 backdrop-blur-md p-6 shadow-lg transition-all focus-within:border-violet-500/50 focus-within:shadow-[0_0_20px_rgba(139,92,246,0.2)]",
                 className
             )}
         >
-            <Meteors number={30} />
+            <Meteors number={15} />
             {children}
         </div>
     );
@@ -59,10 +59,10 @@ const QuestionForm = ({ question }: { question?: Models.Document }) => {
     const loadConfetti = (timeInMS = 3000) => {
         const end = Date.now() + timeInMS; // 3 seconds
         const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"];
-    
+
         const frame = () => {
             if (Date.now() > end) return;
-    
+
             fireConfetti({
                 particleCount: 2,
                 angle: 60,
@@ -71,7 +71,7 @@ const QuestionForm = ({ question }: { question?: Models.Document }) => {
                 origin: { x: 0, y: 0.5 },
                 colors: colors,
             });
-            
+
             fireConfetti({
                 particleCount: 2,
                 angle: 120,
@@ -80,29 +80,42 @@ const QuestionForm = ({ question }: { question?: Models.Document }) => {
                 origin: { x: 1, y: 0.5 },
                 colors: colors,
             });
-    
+
             requestAnimationFrame(frame);
         };
-    
+
         frame();
     };
 
     const create = async () => {
-        if (!formData.attachment) throw new Error("Please upload an image");
+        let attachmentId = null;
 
-        const storageResponse = await storage.createFile(
-            questionAttachmentBucket,
-            ID.unique(),
-            formData.attachment
-        );
+        if (formData.attachment) {
+            const storageResponse = await storage.createFile(
+                questionAttachmentBucket,
+                ID.unique(),
+                formData.attachment
+            );
+            attachmentId = storageResponse.$id;
+        }
 
-        const response = await databases.createDocument(db, questionCollection, ID.unique(), {
+        const data: any = {
             title: formData.title,
             content: formData.content,
             authorId: formData.authorId,
             tags: Array.from(formData.tags),
-            attachmentId: storageResponse.$id,
-        });
+        };
+
+        if (attachmentId) {
+            data.attachmentId = attachmentId;
+        }
+
+        const response = await databases.createDocument(
+            db,
+            questionCollection,
+            ID.unique(),
+            data
+        );
 
         loadConfetti();
 
@@ -113,9 +126,11 @@ const QuestionForm = ({ question }: { question?: Models.Document }) => {
         if (!question) throw new Error("Please provide a question");
 
         const attachmentId = await (async () => {
-            if (!formData.attachment) return question?.attachmentId as string;
+            if (!formData.attachment) return question?.attachmentId as string | undefined;
 
-            await storage.deleteFile(questionAttachmentBucket, question.attachmentId);
+            if (question.attachmentId) {
+                await storage.deleteFile(questionAttachmentBucket, question.attachmentId);
+            }
 
             const file = await storage.createFile(
                 questionAttachmentBucket,
@@ -126,13 +141,18 @@ const QuestionForm = ({ question }: { question?: Models.Document }) => {
             return file.$id;
         })();
 
-        const response = await databases.updateDocument(db, questionCollection, question.$id, {
+        const data: any = {
             title: formData.title,
             content: formData.content,
             authorId: formData.authorId,
             tags: Array.from(formData.tags),
-            attachmentId: attachmentId,
-        });
+        };
+
+        if (attachmentId) {
+            data.attachmentId = attachmentId;
+        }
+
+        const response = await databases.updateDocument(db, questionCollection, question.$id, data);
 
         return response;
     };
@@ -145,11 +165,7 @@ const QuestionForm = ({ question }: { question?: Models.Document }) => {
             return;
         }
 
-        // Check if this is a new question and requires an attachment
-        if (!question && !formData.attachment) {
-            setError(() => "Please upload an image");
-            return;
-        }
+        // Image is no longer required, removed check for !formData.attachment
 
         setLoading(() => true);
         setError(() => "");
@@ -182,14 +198,14 @@ const QuestionForm = ({ question }: { question?: Models.Document }) => {
                 </LabelInputContainer>
             )}
             <LabelInputContainer>
-                <Label htmlFor="title">
-                    Title
-                    <br />
-                    <small>
+                <Label htmlFor="title" className="text-white font-semibold flex flex-col">
+                    <span>Title</span>
+                    <small className="text-zinc-500 font-normal mt-1">
                         (Be specific and imagine you&apos;re asking a question to another person.)
                     </small>
                 </Label>
                 <Input
+                    className="text-white font-medium bg-black/40 border-white/10 focus:border-violet-500/50 focus:ring-violet-500/50 transition-colors mt-2"
                     id="title"
                     name="title"
                     placeholder="e.g. Is there an R function for finding the index of an element in a vector?"
@@ -199,10 +215,9 @@ const QuestionForm = ({ question }: { question?: Models.Document }) => {
                 />
             </LabelInputContainer>
             <LabelInputContainer>
-                <Label htmlFor="content">
-                    What are the details of your problem?
-                    <br />
-                    <small>
+                <Label htmlFor="content" className="text-white font-semibold flex flex-col mb-4">
+                    <span>What are the details of your problem?</span>
+                    <small className="text-zinc-500 font-normal mt-1">
                         (Introduce the problem and expand on what you put in the title. Minimum 20
                         characters.)
                     </small>
@@ -213,18 +228,17 @@ const QuestionForm = ({ question }: { question?: Models.Document }) => {
                 />
             </LabelInputContainer>
             <LabelInputContainer >
-                <Label  htmlFor="image">
-                    Image
-                    <br />
-                    <small>
+                <Label htmlFor="image" className="text-white font-semibold flex flex-col">
+                    <span>Image</span>
+                    <small className="text-zinc-500 font-normal mt-1">
                         (Add image to your question to make it more clear and easier to understand.)
                     </small>
                 </Label>
                 <Input
+                    className="mt-2 text-zinc-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-500/10 file:text-violet-400 hover:file:bg-violet-500/20"
                     id="image"
                     name="image"
                     accept="image/*"
-                    placeholder="e.g. Is there an R function for finding the index of an element in a vector?"
                     type="file"
                     onChange={e => {
                         const files = e.target.files;
@@ -237,17 +251,17 @@ const QuestionForm = ({ question }: { question?: Models.Document }) => {
                 />
             </LabelInputContainer>
             <LabelInputContainer >
-                <Label htmlFor="tag">
-                    Tags
-                    <br />
-                    <small>
+                <Label htmlFor="tag" className="text-white font-semibold flex flex-col mb-2">
+                    <span>Tags</span>
+                    <small className="text-zinc-500 font-normal mt-1">
                         Add tags to describe what your question is about. Start typing to see
                         suggestions.
                     </small>
                 </Label>
-                <div className="flex w-full gap-4">
+                <div className="flex w-full gap-4 items-center mt-2">
                     <div className="w-full">
                         <Input
+                            className="text-white font-medium bg-black/40 border-white/10 focus:border-violet-500/50 focus:ring-violet-500/50 transition-colors"
                             id="tag"
                             name="tag"
                             placeholder="e.g. (java c objective-c)"
@@ -257,7 +271,7 @@ const QuestionForm = ({ question }: { question?: Models.Document }) => {
                         />
                     </div>
                     <button
-                        className="relative shrink-0 rounded-full border border-slate-600 bg-slate-700 px-8 py-2 text-sm text-white transition duration-200 hover:shadow-2xl hover:shadow-white/[0.1]"
+                        className="relative shrink-0 rounded-full border border-violet-500/30 bg-violet-500/10 px-8 py-2 text-sm font-medium text-violet-300 transition-all hover:bg-violet-500/20 active:scale-95"
                         type="button"
                         onClick={() => {
                             if (tag.length === 0) return;
@@ -268,45 +282,44 @@ const QuestionForm = ({ question }: { question?: Models.Document }) => {
                             setTag(() => "");
                         }}
                     >
-                        <div className="absolute inset-x-0 -top-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent via-teal-500 to-transparent shadow-2xl" />
-                        <span className="relative z-20">Add</span>
+                        <span>Add</span>
                     </button>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 mt-4">
                     {Array.from(formData.tags).map((tag, index) => (
-                        <div key={index} className="flex items-center gap-2">
-                            <div className="group relative inline-block rounded-full bg-slate-800 p-px text-xs font-semibold leading-6 text-white no-underline shadow-2xl shadow-zinc-900">
-                                <span className="absolute inset-0 overflow-hidden rounded-full">
-                                    <span className="absolute inset-0 rounded-full bg-[image:radial-gradient(75%_100%_at_50%_0%,rgba(56,189,248,0.6)_0%,rgba(56,189,248,0)_75%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                                </span>
-                                <div className="relative z-10 flex items-center space-x-2 rounded-full bg-zinc-950 px-4 py-0.5 ring-1 ring-white/10">
-                                    <span>{tag}</span>
-                                    <button
-                                        onClick={() => {
-                                            setFormData(prev => ({
-                                                ...prev,
-                                                tags: new Set(
-                                                    Array.from(prev.tags).filter(t => t !== tag)
-                                                ),
-                                            }));
-                                        }}
-                                        type="button"
-                                    >
-                                        <IconX size={12} />
-                                    </button>
-                                </div>
-                                <span className="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-emerald-400/0 via-emerald-400/90 to-emerald-400/0 transition-opacity duration-500 group-hover:opacity-40" />
+                        <div key={index} className="flex items-center gap-2 group">
+                            <div className="relative flex items-center space-x-2 rounded-full border border-violet-500/20 bg-violet-500/10 px-4 py-1.5 text-xs font-semibold text-cyan-400 backdrop-blur-md transition-all hover:bg-violet-500/20">
+                                <span>#{tag}</span>
+                                <button
+                                    onClick={() => {
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            tags: new Set(
+                                                Array.from(prev.tags).filter(t => t !== tag)
+                                            ),
+                                        }));
+                                    }}
+                                    type="button"
+                                    className="p-0.5 rounded-full hover:bg-white/10 transition-colors"
+                                >
+                                    <IconX size={14} />
+                                </button>
                             </div>
                         </div>
                     ))}
                 </div>
             </LabelInputContainer>
+
             <button
-                className="inline-flex h-12 animate-shimmer items-center justify-center rounded-md border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
+                className="group relative block w-full h-14 rounded-2xl bg-electric-gradient p-[1px] transition-all hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] active:scale-[0.98]"
                 type="submit"
                 disabled={loading}
             >
-                {loading ? "Processing..." : question ? "Update" : "Publish"}
+                <div className="flex h-full w-full items-center justify-center rounded-2xl bg-surface transition-all duration-300 group-hover:bg-transparent">
+                    <span className="text-lg font-bold text-white tracking-wide">
+                        {loading ? "Processing..." : question ? "Update Question" : "Post a Question →"}
+                    </span>
+                </div>
             </button>
         </form>
     );

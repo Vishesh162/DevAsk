@@ -6,9 +6,9 @@ import NumberTicker from "@/components/magicui/number-ticker";
 import { answerCollection, db, questionCollection } from "@/models/name";
 import { Query } from "node-appwrite";
 
-export default async function Page({ params }: { 
-    params: { userId: string; userSlug: string } 
-  }) {
+export default async function Page({ params }: {
+    params: { userId: string; userSlug: string }
+}) {
     // Create a new variable
     const { userId } = await params;
 
@@ -28,33 +28,41 @@ export default async function Page({ params }: {
     ]);
 
     return (
-        <div className=" h-500 w-full flex flex-col gap-4 lg:h-60 lg:flex-row">
-            <CardSpotlight className="flex w-full cursor-pointer flex-col items-center justify-center overflow-hidden p-20 shadow-2xl">
-                <div className="absolute inset-x-4 top-4">
-                    <h2 className="text-xl font-medium">Reputation</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+            <CardSpotlight className="group relative flex w-full flex-col items-center justify-center p-12 rounded-3xl border border-white/10 bg-surface/40 backdrop-blur-md transition-all hover:bg-surface/60 overflow-hidden">
+                <div className="absolute inset-x-6 top-6">
+                    <h2 className="text-sm font-bold uppercase tracking-wider text-zinc-500 group-hover:text-violet-400 transition-colors">Reputation</h2>
                 </div>
-                <p className="z-10 whitespace-nowrap text-4xl font-medium text-gray-800 dark:text-gray-200">
-                    <NumberTicker value={user.prefs.reputation || 0} />
-                </p>
-                <div className="pointer-events-none absolute inset-0 h-full bg-[radial-gradient(circle_at_50%_120%,rgba(120,119,198,0.3),rgba(255,255,255,0))]" />
+                <div className="z-10 flex flex-col items-center gap-2">
+                    <p className="text-6xl font-black text-white tracking-tighter drop-shadow-[0_0_15px_rgba(139,92,246,0.3)]">
+                        <NumberTicker value={user.prefs.reputation || 0} />
+                    </p>
+                    <span className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">Points earned</span>
+                </div>
             </CardSpotlight>
-            <CardSpotlight className="flex w-full cursor-pointer flex-col items-center justify-center overflow-hidden p-20 shadow-2xl">
-                <div className="absolute inset-x-4 top-4">
-                    <h2 className="text-xl font-medium">Questions asked</h2>
+
+            <CardSpotlight className="group relative flex w-full flex-col items-center justify-center p-12 rounded-3xl border border-white/10 bg-surface/40 backdrop-blur-md transition-all hover:bg-surface/60 overflow-hidden">
+                <div className="absolute inset-x-6 top-6">
+                    <h2 className="text-sm font-bold uppercase tracking-wider text-zinc-500 group-hover:text-cyan-400 transition-colors">Questions Asked</h2>
                 </div>
-                <p className="z-10 whitespace-nowrap text-4xl font-medium text-gray-800 dark:text-gray-200">
-                    <NumberTicker value={questions.total || 0} />
-                </p>
-                <div className="pointer-events-none absolute inset-0 h-full bg-[radial-gradient(circle_at_50%_120%,rgba(120,119,198,0.3),rgba(255,255,255,0))]" />
+                <div className="z-10 flex flex-col items-center gap-2">
+                    <p className="text-6xl font-black text-white tracking-tighter drop-shadow-[0_0_15px_rgba(34,211,238,0.3)]">
+                        <NumberTicker value={questions.total || 0} />
+                    </p>
+                    <span className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">Total Threads</span>
+                </div>
             </CardSpotlight>
-            <CardSpotlight className="flex w-full cursor-pointer flex-col items-center justify-center overflow-hidden p-20 shadow-2xl">
-                <div className="absolute inset-x-4 top-4">
-                    <h2 className="text-xl font-medium">Answers given</h2>
+
+            <CardSpotlight className="group relative flex w-full flex-col items-center justify-center p-12 rounded-3xl border border-white/10 bg-surface/40 backdrop-blur-md transition-all hover:bg-surface/60 overflow-hidden">
+                <div className="absolute inset-x-6 top-6">
+                    <h2 className="text-sm font-bold uppercase tracking-wider text-zinc-500 group-hover:text-fuchsia-400 transition-colors">Answers Given</h2>
                 </div>
-                <p className="z-10 whitespace-nowrap text-4xl font-medium text-gray-800 dark:text-gray-200">
-                    <NumberTicker value={answers.total || 0} />
-                </p>
-                <div className="pointer-events-none absolute inset-0 h-full bg-[radial-gradient(circle_at_50%_120%,rgba(120,119,198,0.3),rgba(255,255,255,0))]" />
+                <div className="z-10 flex flex-col items-center gap-2">
+                    <p className="text-6xl font-black text-white tracking-tighter drop-shadow-[0_0_15px_rgba(232,121,249,0.3)]">
+                        <NumberTicker value={answers.total || 0} />
+                    </p>
+                    <span className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">Contributions</span>
+                </div>
             </CardSpotlight>
         </div>
     );

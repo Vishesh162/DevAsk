@@ -8,22 +8,14 @@ import QuestionCard from "@/components/QuestionCard";
 import { UserPrefs } from "@/store/Auth";
 import Pagination from "@/components/Pagination";
 import Search from "./Search";
-import { useSearchParams } from 'next/navigation';
 
-interface PageProps {
-  params: Promise<{
-    quesId: string;
-    quesName: string;
-  }>;
-}
 
-const Page = async ({ searchParams }: { searchParams: params<string, string | string[]> }) => {
-    // Convert searchParams to a standard object
-    const params = new URLSearchParams(searchParams.toString());
+const Page = async ({ searchParams }: { searchParams: Promise<Record<string, string | string[]>> }) => {
+    const resolvedParams = await searchParams;
 
-const page = searchParams.page?.toString() || "1";
-const tag = searchParams.tag?.toString();
-const search = searchParams.search?.toString();
+    const page = resolvedParams.page?.toString() || "1";
+    const tag = resolvedParams.tag?.toString();
+    const search = resolvedParams.search?.toString();
 
     const queries = [
         Query.orderDesc("$createdAt"),
@@ -45,7 +37,12 @@ const search = searchParams.search?.toString();
     questions.documents = await Promise.all(
         questions.documents.map(async (ques) => {
             const [author, answers, votes] = await Promise.all([
-                users.get<UserPrefs>(ques.authorId),
+                users.get<UserPrefs>(ques.authorId).catch(() => ({
+                    $id: ques.authorId,
+                    name: "Deleted User",
+                    email: "",
+                    prefs: { reputation: 0 } as UserPrefs,
+                })),
                 databases.listDocuments(db, answerCollection, [
                     Query.equal("questionId", ques.$id),
                     Query.limit(1),
@@ -71,26 +68,26 @@ const search = searchParams.search?.toString();
     );
 
     return (
-        <div className="min-h-screen bg-black text-white px-4 py-8">
+        <div className="min-h-screen bg-background text-white px-4 py-8">
             <div className="max-w-3xl mx-auto w-full">
                 <div className="container mx-auto w-auto px-4 pb-20 pt-36">
                     <div className="mb-10 flex items-center justify-between">
-                        <h1 className="text-3xl font-bold">All Questions</h1>
+                        <h1 className="text-4xl font-extrabold tracking-tight text-white mb-4">All Questions</h1>
                         <Link href="/questions/ask">
-                            <ShimmerButton className="shadow-2xl">
-                                <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-white dark:from-white dark:to-slate-900/10 lg:text-lg">
-                                    Ask a question
+                            <ShimmerButton className="shadow-[0_0_20px_rgba(139,92,246,0.5)] transition-all hover:scale-105">
+                                <span className="whitespace-pre-wrap text-center text-sm font-semibold leading-none tracking-tight text-white lg:text-base">
+                                    Ask a Question
                                 </span>
                             </ShimmerButton>
                         </Link>
                     </div>
-                    <div className="mb-4">
+                    <div className="mb-8">
                         <Search />
                     </div>
-                    <div className="mb-4">
-                        <p>{questions.total} questions</p>
+                    <div className="mb-6 flex items-center justify-between text-zinc-400 text-sm">
+                        <p className="font-medium bg-white/5 px-3 py-1 rounded-full">{questions.total} questions</p>
                     </div>
-                    <div className="mb-4 max-w-3xl space-y-6">
+                    <div className="mb-8 max-w-3xl space-y-6">
                         {questions.documents.map((ques) => (
                             <QuestionCard key={ques.$id} ques={ques} />
                         ))}

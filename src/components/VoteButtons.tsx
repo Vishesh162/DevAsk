@@ -8,6 +8,7 @@ import { IconCaretUpFilled, IconCaretDownFilled } from "@tabler/icons-react";
 import { ID, Models, Query } from "appwrite";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { motion } from "framer-motion";
 
 const VoteButtons = ({
     type,
@@ -96,30 +97,34 @@ const VoteButtons = ({
     };
 
     return (
-        <div className={cn("flex shrink-0 flex-col items-center justify-start gap-y-4", className)}>
-            <button
+        <div className={cn("flex flex-col items-center justify-start gap-y-2 rounded-full bg-surface/50 border border-white/5 p-2 backdrop-blur-md shadow-sm", className)}>
+            <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
                 className={cn(
-                    "flex h-10 w-10 items-center justify-center rounded-full border p-1 duration-200 hover:bg-white/10",
+                    "flex h-10 w-10 items-center justify-center rounded-full border transition-all duration-300",
                     votedDocument && votedDocument.voteStatus === "upvoted"
-                        ? "border-orange-500 text-orange-500"
-                        : "border-white/30"
+                        ? "border-cyan-500 bg-cyan-500/10 text-cyan-400 shadow-[0_0_15px_-3px_rgba(6,182,212,0.4)]"
+                        : "border-transparent bg-transparent text-zinc-400 hover:bg-white/5 hover:text-cyan-400"
                 )}
                 onClick={toggleUpvote}
             >
-                <IconCaretUpFilled />
-            </button>
-            <span>{voteResult}</span>
-            <button
+                <IconCaretUpFilled className="h-6 w-6" />
+            </motion.button>
+            <span className="font-bold text-white my-1">{voteResult}</span>
+            <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
                 className={cn(
-                    "flex h-10 w-10 items-center justify-center rounded-full border p-1 duration-200 hover:bg-white/10",
+                    "flex h-10 w-10 items-center justify-center rounded-full border transition-all duration-300",
                     votedDocument && votedDocument.voteStatus === "downvoted"
-                        ? "border-orange-500 text-orange-500"
-                        : "border-white/30"
+                        ? "border-red-500 text-red-500 bg-red-500/10 shadow-[0_0_15px_-3px_rgba(239,68,68,0.4)]"
+                        : "border-transparent bg-transparent text-zinc-400 hover:bg-white/5 hover:text-red-500"
                 )}
                 onClick={toggleDownvote}
             >
-                <IconCaretDownFilled />
-            </button>
+                <IconCaretDownFilled className="h-6 w-6" />
+            </motion.button>
         </div>
     );
 };

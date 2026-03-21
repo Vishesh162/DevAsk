@@ -7,23 +7,19 @@ import { answerCollection, db, questionCollection } from "@/models/name";
 import { Query } from "node-appwrite";
 
 export default async function Page({ params }: {
-    params: { userId: string; userSlug: string }
+    params: Promise<{ userId: string; userSlug: string }>; // ✅ Fixed
 }) {
-    // Create a new variable
     const { userId } = await params;
-
-
-
 
     const [user, questions, answers] = await Promise.all([
         users.get<UserPrefs>(userId),
         databases.listDocuments(db, questionCollection, [
             Query.equal("authorId", userId),
-            Query.limit(1), // for optimization
+            Query.limit(1),
         ]),
         databases.listDocuments(db, answerCollection, [
             Query.equal("authorId", userId),
-            Query.limit(1), // for optimization
+            Query.limit(1),
         ]),
     ]);
 

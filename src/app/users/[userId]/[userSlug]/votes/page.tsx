@@ -11,10 +11,9 @@ const Page = async ({
     params,
     searchParams,
 }: {
-    params: { userId: string; userSlug: string };
-    searchParams: { page?: string; voteStatus?: "upvoted" | "downvoted" };
+    params: Promise<{ userId: string; userSlug: string }>; // ✅ Fixed
+    searchParams: Promise<{ page?: string; voteStatus?: "upvoted" | "downvoted" }>; // ✅ Fixed
 }) => {
-    // Await params and searchParams
     const { userId, userSlug } = await params;
     const { page = "1", voteStatus } = await searchParams;
 
@@ -32,7 +31,7 @@ const Page = async ({
     votes.documents = (
         await Promise.all(
             votes.documents.map(async (vote) => {
-                if (!vote?.type || !vote?.typeId) return null; // Ensure valid vote entry
+                if (!vote?.type || !vote?.typeId) return null;
     
                 try {
                     if (vote.type === "question") {
@@ -43,7 +42,7 @@ const Page = async ({
                     }
     
                     const answer = await databases.getDocument(db, answerCollection, vote.typeId);
-                    if (!answer) return null; // Skip if answer not found
+                    if (!answer) return null;
     
                     const questionOfTypeAnswer = await databases.getDocument(
                         db, questionCollection, answer.questionId, [Query.select(["title"])]
@@ -51,19 +50,17 @@ const Page = async ({
     
                     return questionOfTypeAnswer
                         ? { ...vote, question: questionOfTypeAnswer }
-                        : null; // Skip if question not found
+                        : null;
                 } catch (error) {
                     if ((error as { code?: number }).code === 404){
                         console.warn(`Skipping vote ${vote.$id} - Linked document not found.`);
-                        return null; // Skip votes with missing docs
+                        return null;
                     }
-                    throw error; // Re-throw other errors
+                    throw error;
                 }
             })
         )
-    ).filter((vote): vote is NonNullable<typeof vote> => vote !== null); // Type-safe filter
-    
-    
+    ).filter((vote): vote is NonNullable<typeof vote> => vote !== null);
 
     return (
         <div className="px-4">
@@ -73,8 +70,7 @@ const Page = async ({
                     <li>
                         <Link
                             href={`/users/${userId}/${userSlug}/votes`}
-                            className={`block w-full rounded-full px-3 py-0.5 duration-200 ${!voteStatus ? "bg-white/20" : "hover:bg-white/20"
-                                }`}
+                            className={`block w-full rounded-full px-3 py-0.5 duration-200 ${!voteStatus ? "bg-white/20" : "hover:bg-white/20"}`}
                         >
                             All
                         </Link>
@@ -82,8 +78,7 @@ const Page = async ({
                     <li>
                         <Link
                             href={`/users/${userId}/${userSlug}/votes?voteStatus=upvoted`}
-                            className={`block w-full rounded-full px-3 py-0.5 duration-200 ${voteStatus === "upvoted" ? "bg-white/20" : "hover:bg-white/20"
-                                }`}
+                            className={`block w-full rounded-full px-3 py-0.5 duration-200 ${voteStatus === "upvoted" ? "bg-white/20" : "hover:bg-white/20"}`}
                         >
                             Upvotes
                         </Link>
@@ -91,8 +86,7 @@ const Page = async ({
                     <li>
                         <Link
                             href={`/users/${userId}/${userSlug}/votes?voteStatus=downvoted`}
-                            className={`block w-full rounded-full px-3 py-0.5 duration-200 ${voteStatus === "downvoted" ? "bg-white/20" : "hover:bg-white/20"
-                                }`}
+                            className={`block w-full rounded-full px-3 py-0.5 duration-200 ${voteStatus === "downvoted" ? "bg-white/20" : "hover:bg-white/20"}`}
                         >
                             Downvotes
                         </Link>

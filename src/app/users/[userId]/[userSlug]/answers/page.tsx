@@ -11,10 +11,9 @@ const Page = async ({
     params,
     searchParams,
 }: {
-    params: { userId: string; userSlug: string };
-    searchParams: { page?: string };
+    params: Promise<{ userId: string; userSlug: string }>;
+    searchParams: Promise<{ page?: string }>;
 }) => {
-    // Await params and searchParams
     const { userId } = await params;
     const { page = "1" } = await searchParams;
 
@@ -62,3 +61,5 @@ const Page = async ({
 };
 
 export default Page;
+
+

@@ -4,7 +4,6 @@ import { databases } from "@/models/server/config";
 import { db, questionCollection } from "@/models/name";
 import { Query } from "node-appwrite";
 import slugify from "@/utils/slugify";
-import HeroSectionHeader from "./HeroSectionHeader";
 
 const fallbackProducts = [
     { title: "React Architecture", link: "#", thumbnail: "https://images.unsplash.com/photo-1555099962-4199c345e5dd?q=80&w=600&auto=format&fit=crop" },
@@ -18,7 +17,6 @@ const fallbackProducts = [
     { title: "Tailwind CSS Layouts", link: "#", thumbnail: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?q=80&w=600&auto=format&fit=crop" },
     { title: "Cloud Deployment", link: "#", thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=600&auto=format&fit=crop" },
     { title: "Linux Terminal", link: "#", thumbnail: "https://images.unsplash.com/photo-1629654297299-c8506221ca97?q=80&w=600&auto=format&fit=crop" },
-    // ✅ Fixed — replaced broken photo-1614064641913 URL
     { title: "Authentication Flows", link: "#", thumbnail: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=600&auto=format&fit=crop" },
     { title: "Algorithm Efficiency", link: "#", thumbnail: "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=600&auto=format&fit=crop" },
     { title: "Security Best Practices", link: "#", thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=600&auto=format&fit=crop" },
@@ -42,9 +40,6 @@ export default async function HeroSection() {
     const products = [...realProducts, ...fallbackProducts].slice(0, 15);
 
     return (
-        <HeroParallax
-            header={<HeroSectionHeader />}
-            products={products}
-        />
+        <HeroParallax products={products} />
     );
 }

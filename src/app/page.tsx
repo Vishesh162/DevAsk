@@ -1,3 +1,4 @@
+export const revalidate = 0;
 import { HeroParallax } from "@/components/ui/hero-parallax";
 import HeroSection from "./components/HeroSection";
 import HeroSectionHeader from "./components/HeroSectionHeader";

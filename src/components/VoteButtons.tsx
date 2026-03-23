@@ -5,7 +5,7 @@ import { db, voteCollection } from "@/models/name";
 import { useAuthStore } from "@/store/Auth";
 import { cn } from "@/lib/utils";
 import { IconCaretUpFilled, IconCaretDownFilled } from "@tabler/icons-react";
-import { ID, Models, Query } from "appwrite";
+import { Models, Query } from "appwrite";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { motion } from "framer-motion";
@@ -64,6 +64,7 @@ const VoteButtons = ({
 
             setVoteResult(() => data.data.voteResult);
             setVotedDocument(() => data.data.document);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             window.alert(error?.message || "Something went wrong");
         }
@@ -91,6 +92,7 @@ const VoteButtons = ({
 
             setVoteResult(() => data.data.voteResult);
             setVotedDocument(() => data.data.document);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             window.alert(error?.message || "Something went wrong");
         }

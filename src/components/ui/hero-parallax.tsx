@@ -12,10 +12,8 @@ import Link from "next/link";
 import HeroSectionHeader from "@/app/components/HeroSectionHeader";
 
 export const HeroParallax = ({
-  header,
   products,
 }: {
-  header?: React.ReactNode; // Accept a header prop
   products: {
     title: string;
     link: string;

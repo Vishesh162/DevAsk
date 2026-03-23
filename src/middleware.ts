@@ -5,7 +5,7 @@ import getOrCreateDB from './models/server/dbSetup'
 import getOrCreateStorage from './models/server/storageSetup'
 
 // Ensures the database and storage bucket exist before any request is handled
-export async function middleware(request: NextRequest) {
+export async function middleware(_request: NextRequest) {
     await Promise.all([
         getOrCreateDB(),
         getOrCreateStorage()

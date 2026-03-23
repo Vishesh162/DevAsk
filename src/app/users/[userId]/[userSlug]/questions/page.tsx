@@ -10,8 +10,8 @@ const Page = async ({
     params,
     searchParams,
 }: {
-    params: Promise<{ userId: string; userSlug: string }>; // ✅ Fixed
-    searchParams: Promise<{ page?: string }>; // ✅ Fixed
+    params: Promise<{ userId: string; userSlug: string }>; 
+    searchParams: Promise<{ page?: string }>; 
 }) => {
     const { userId } = await params;
     const { page = "1" } = await searchParams;

@@ -60,8 +60,8 @@ const QuestionCard = ({ ques }: { ques: Models.Document }) => {
                             {ques.author.name}
                         </Link>
                         <strong className="text-zinc-500 text-xs ml-1">&bull; {ques.author.reputation}</strong>
+                        <span className="text-zinc-500 text-xs">asked {convertDateToRelativeTime(new Date(ques.$createdAt))}</span>
                     </div>
-                    <span className="text-zinc-500 text-xs mt-1 sm:mt-0 ml-2">asked {convertDateToRelativeTime(new Date(ques.$createdAt))}</span>
                 </div>
             </div>
         </div>
